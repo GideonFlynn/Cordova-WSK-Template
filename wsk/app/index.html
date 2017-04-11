@@ -6,6 +6,7 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Web Starter Kit</title>
+    <script type="text/javascript" src="cordova.js"></script>
 
     <!-- Disable tap highlight on IE -->
     <meta name="msapplication-tap-highlight" content="no">
@@ -67,7 +68,7 @@
           <a href="#features" class="mdl-layout__tab">Features</a>
           <a href="#features" class="mdl-layout__tab">Details</a>
           <a href="#features" class="mdl-layout__tab">Technology</a>
-          <a href="#features" class="mdl-layout__tab">FAQ</a>
+          <a href="#features" class="mdl-layout__tab" >FAQ</a>
           <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored mdl-shadow--4dp mdl-color--accent" id="add">
             <i class="material-icons" role="presentation">add</i>
             <span class="visuallyhidden">Add</span>
@@ -75,13 +76,17 @@
         </div>
       </header>
       <main class="mdl-layout__content">
+        <div class="drum" ontouchstart="app.play('bass');" ontouchend="app.touchEnd(event);"><span>Bass</span></div>
+        <div class="drum" id="highhat" ontouchstart="app.play('highhat');" ontouchend="app.touchEnd(event);"><span>Hihat</span></div>
+        <div class="drum" id="snare" ontouchstart="app.play('snare');" ontouchend="app.touchEnd(event);"><span>Snare</span></div>
+        <div class="drum" id="bongo" ontouchstart="app.play('bongo');" ontouchend="app.touchEnd(event);"><span>Bongo</span></div>
         <div class="mdl-layout__tab-panel is-active" id="overview">
           <section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp">
             <header class="section__play-btn mdl-cell mdl-cell--3-col-desktop mdl-cell--2-col-tablet mdl-cell--4-col-phone mdl-color--teal-100 mdl-color-text--white">
               <i class="material-icons">play_circle_filled</i>
             </header>
             <div class="mdl-card mdl-cell mdl-cell--9-col-desktop mdl-cell--6-col-tablet mdl-cell--4-col-phone">
-              <div class="mdl-card__supporting-text">
+              <div class="mdl-card__supporting-text" id="bass" ontouchstart="app.play('bass');" ontouchend="app.touchEnd(event);">
                 <h4>Features</h4>
                 Dolore ex deserunt aute fugiat aute nulla ea sunt aliqua nisi cupidatat eu. Nostrud in laboris labore nisi amet do dolor eu fugiat consectetur elit cillum esse.
               </div>
@@ -283,10 +288,73 @@
         </footer>
       </main>
     </div>
+    <script type="text/javascript">
+      var app = {
+        // Application Constructor
+        initialize: function() {
+          this.bindEvents();
+        },
+        // Bind Event Listeners
+        //
+        // Bind any events that are required on startup. Common events are:
+        // 'load', 'deviceready', 'offline', and 'online'.
+        bindEvents: function() {
+          document.addEventListener('deviceready', this.onDeviceReady, false);
+        },
+        // deviceready Event Handler
+        //
+        // The scope of 'this' is the event. In order to call the 'receivedEvent'
+        // function, we must explicitly call 'app.receivedEvent(...);'
+        onDeviceReady: function() {
+          app.receivedEvent('deviceready');
+          console.log('deviceready');
+        },
+        // Update DOM on a Received Event
+        receivedEvent: function(id) {
 
+          if( window.plugins && window.plugins.NativeAudio ) {
+
+            var items = ['bass', 'snare', 'highhat', 'bongo'];
+            for(var i=0; i<items.length; i++) {
+              var asset = 'images/assets/' + items[i] + '.mp3';
+              window.plugins.NativeAudio.preloadSimple(items[i],
+                asset,
+                function(msg){console.info(msg)},
+                function(msg){ console.error( 'Error: ' + msg ); });
+            }
+
+            window.plugins.NativeAudio.preloadComplex('noise',
+              'images/assets/ambient.mp3',
+              1, // volume
+              1, // voices
+              0, // delay
+              function(msg) {
+                console.info(msg);
+                window.plugins.NativeAudio.play('noise',
+                  function(msg){console.info(msg)},
+                  function(msg){ console.error( 'Error: ' + msg ); },
+                  function(msg){ console.error( 'Complete: ' + msg ); });
+              },
+              function(msg){ alert( 'Error: ' + msg ); });
+
+          }
+
+        },
+
+        play: function(drum) {
+          document.getElementById(drum).classList.add('touched');
+          window.plugins.NativeAudio.play(drum,
+            function(msg){console.info(msg), document.getElementById(drum).classList.remove('touched');},
+            function(msg){ console.error( 'Error: ' + msg ); });
+        }
+
+
+      };            app.initialize();
+    </script>
     <script src="https://code.getmdl.io/1.2.1/material.min.js"></script>
     <!-- build:js scripts/main.min.js -->
-    <script src="scripts/main.js"></script>
+
+    <script type="text/javascript" src="/scripts/index.js"></script>
     <!-- endbuild -->
 
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->

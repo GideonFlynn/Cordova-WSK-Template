@@ -24,6 +24,35 @@ html, body {
   margin: 0;
   padding: 0;
 }
+.drum {
+  width: 50%;
+  height: 50%;
+  box-sizing: border-box;
+  float: left;
+  position: relative;
+  border-radius: 19px;
+  background: rgb(197, 197, 197);
+  font-size: 20px;
+  font-family: sans-serif;
+  text-align: center;
+  color: rgb(53, 53, 53);
+  box-shadow: inset 0px 0px 0px 6px rgb(255, 255, 255);
+}
+.touched {
+  background-color: #34495e;
+}
+
+.drum span {
+  border: 0px solid;
+  background: transparent;
+  text-align: center;
+  position: relative;
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  -webkit-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+
 .mdl-demo .mdl-layout__header-row {
   padding-left: 40px;
 }
